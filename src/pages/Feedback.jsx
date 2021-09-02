@@ -1,10 +1,10 @@
 import React from 'react';
-import Ranking from '../components/Ranking';
+import Header from '../components/Header';
 
 class FeedBack extends React.Component {
   render() {
     return (
-      <Ranking />
+      <Header />
     );
   }
 }

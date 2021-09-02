@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import Header from '../components/Header';
+import { loginSubmit as loginSubmitAction } from '../redux/actions';
 
 class Login extends Component {
   constructor(props) {
@@ -10,6 +14,7 @@ class Login extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleButton = this.handleButton.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleChange({ target: { name, value } }) {
@@ -29,38 +34,54 @@ class Login extends Component {
     });
   }
 
+  handleClick() {
+    const { loginSubmit } = this.props;
+    const { name, email } = this.state;
+    loginSubmit(name, email);
+  }
+
   render() {
     const { name, email, enableButton } = this.state;
-
     return (
-      <fieldset>
-        <input
-          data-testid="input-player-name"
-          type="text"
-          name="name"
-          placeholder="Nome"
-          value={ name }
-          onChange={ this.handleChange }
-        />
-        <input
-          data-testid="input-gravatar-email"
-          type="email"
-          name="email"
-          placeholder="E-mail"
-          value={ email }
-          onChange={ this.handleChange }
-        />
-        <button
-          data-testid="btn-play"
-          type="button"
-          onClick={ () => {} }
-          disabled={ enableButton ? undefined : true }
-        >
-          Jogar
-        </button>
-      </fieldset>
+      <div>
+        <Header />
+        <fieldset>
+          <input
+            data-testid="input-player-name"
+            type="text"
+            name="name"
+            placeholder="Nome"
+            value={ name }
+            onChange={ this.handleChange }
+          />
+          <input
+            data-testid="input-gravatar-email"
+            type="email"
+            name="email"
+            placeholder="E-mail"
+            value={ email }
+            onChange={ this.handleChange }
+          />
+          <button
+            data-testid="btn-play"
+            type="button"
+            onClick={ this.handleClick }
+            disabled={ enableButton ? undefined : true }
+          >
+            Jogar
+          </button>
+        </fieldset>
+      </div>
     );
   }
 }
 
-export default Login;
+Login.propTypes = {
+  loginSubmit: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  loginSubmit: (payload1, payload2) => dispatch(loginSubmitAction(payload1, payload2)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
