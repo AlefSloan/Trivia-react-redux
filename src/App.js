@@ -1,6 +1,9 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 import logo from './trivia.png';
 import './App.css';
+
+// import login from './pages/login';
 
 export default function App() {
   return (
@@ -11,6 +14,9 @@ export default function App() {
           SUA VEZ
         </p>
       </header>
+      {/* <Switch>
+        <Route exact path="/" component={ login } />
+      </Switch> */}
     </div>
   );
 }
