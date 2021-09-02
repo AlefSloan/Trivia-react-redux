@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { loginSubmit as loginSubmitAction,
+  fetchToken as fetchTokenAction } from '../redux/actions';
 
 class Login extends Component {
   constructor(props) {
@@ -10,6 +14,7 @@ class Login extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleButton = this.handleButton.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange({ target: { name, value } }) {
@@ -27,6 +32,15 @@ class Login extends Component {
     this.setState({
       enableButton: isValid,
     });
+  }
+
+  handleSubmit() {
+    const { history, loginSubmit, fetchToken } = this.props;
+    const { name } = this.state;
+
+    fetchToken();
+    loginSubmit(name);
+    history.push('/triviagame');
   }
 
   render() {
@@ -53,7 +67,7 @@ class Login extends Component {
         <button
           data-testid="btn-play"
           type="button"
-          onClick={ () => {} }
+          onClick={ this.handleSubmit }
           disabled={ enableButton ? undefined : true }
         >
           Jogar
@@ -63,4 +77,17 @@ class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  loginSubmit: PropTypes.func.isRequired,
+  fetchToken: PropTypes.func.isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+
+  loginSubmit: (name) => dispatch(loginSubmitAction(name)),
+  fetchToken: () => dispatch(fetchTokenAction()),
+}
+);
+
+export default connect(null, mapDispatchToProps)(Login);
