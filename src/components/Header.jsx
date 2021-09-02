@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchGravatarIgm as fetchGravatarIgmAction } from '../redux/actions';
 
@@ -9,20 +10,34 @@ class Ranking extends React.Component {
   }
 
   render() {
-    const { img } = this.props;
+    const { img, name, score } = this.props;
     return (
-      <img
-        src={ img }
-        alt="x"
-        data-testid="header-profile-picture"
-      />
+      <div>
+        <img
+          src={ img }
+          alt={ name }
+          data-testid="header-profile-picture"
+        />
+        <p data-testid="header-player-name">{ name }</p>
+        <p data-testid="header-score">{ score }</p>
+      </div>
     );
   }
 }
 
+Ranking.propTypes = {
+  name: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  img: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  fetchGravatarIgm: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = ({ user }) => ({
   email: user.email,
   img: user.img,
+  name: user.name,
+  score: user.score,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -7,8 +7,8 @@ const actions = {
   LOGIN_SUBMIT: 'LOGIN_SUBMIT',
 };
 
-export const loginSubmit = (payload) => ({
-  type: actions.REQUEST_APILOGIN_SUBMIT, payload,
+export const loginSubmit = (payload1, payload2) => ({
+  type: actions.LOGIN_SUBMIT, payload1, payload2,
 });
 
 export const requestApi = () => ({

@@ -1,16 +1,17 @@
 import actions from '../actions';
 
 const INITIAL_STATE = {
-  nome: '',
+  name: '',
   email: '',
   img: '',
+  score: 0,
   loading: false,
 };
 
 function userReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
   case actions.LOGIN_SUBMIT:
-    return { ...state, nome: action.payload, email: action.payload };
+    return { ...state, name: action.payload1, email: action.payload2 };
   case actions.REQUEST_API:
     return { ...state, loading: true };
   case actions.SET_GRAVATAR_IMG:
