@@ -54,7 +54,7 @@ class Login extends Component {
           data-testid="btn-play"
           type="button"
           onClick={ () => {} }
-          disabled={ enableButton ? true : undefined }
+          disabled={ enableButton ? undefined : true }
         >
           Jogar
         </button>
