@@ -4,7 +4,12 @@ const actions = {
   REQUEST_API: 'REQUEST_API',
   FAILED_REQUEST: 'FAILED_REQUEST',
   SET_GRAVATAR_IMG: 'GET_GRAVATAR_IMG',
+  LOGIN_SUBMIT: 'LOGIN_SUBMIT',
 };
+
+export const loginSubmit = (payload) => ({
+  type: actions.REQUEST_APILOGIN_SUBMIT, payload,
+});
 
 export const requestApi = () => ({
   type: actions.REQUEST_API,

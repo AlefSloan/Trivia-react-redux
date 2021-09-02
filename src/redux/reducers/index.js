@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import userImg from './feedbackReduce';
+import userReducer from './user';
 
 const rootReducer = combineReducers({
-  user: userImg,
+  user: userReducer,
 });
 
 export default rootReducer;
