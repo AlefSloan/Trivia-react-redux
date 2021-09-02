@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import logo from './trivia.png';
 import './App.css';
@@ -16,7 +16,9 @@ export default function App() {
       </header>
       <Switch>
         <Route exact path="/" component={ Login } />
+        <Route exact path="/feedback" component={ FeedBack } />
       </Switch>
     </div>
   );
 }
+export default App;

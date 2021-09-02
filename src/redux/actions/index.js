@@ -2,7 +2,15 @@ export const LOGIN_SUBMIT = 'LOGIN_SUBMIT';
 export const GET_TOKEN = 'GET_TOKEN';
 
 export const loginSubmit = (payload) => ({
-  type: LOGIN_SUBMIT, payload,
+  type: actions.REQUEST_APILOGIN_SUBMIT, payload,
+});
+
+export const requestApi = () => ({
+  type: actions.REQUEST_API,
+});
+
+export const failedRequest = (error) => ({
+  type: actions.FAILED_REQUEST, payload: error,
 });
 
 export const getToken = (payload) => ({

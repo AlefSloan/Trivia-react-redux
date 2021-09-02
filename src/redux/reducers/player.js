@@ -1,4 +1,4 @@
-import { LOGIN_SUBMIT } from '../actions';
+import actions from '../actions';
 
 const INITIAL_STATE = {
   nome: '',
