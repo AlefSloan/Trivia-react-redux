@@ -40,7 +40,7 @@ class Login extends Component {
           name="name"
           placeholder="Nome"
           value={ name }
-          onChange={ handleChange }
+          onChange={ this.handleChange }
         />
         <input
           data-testid="input-gravatar-email"
@@ -48,13 +48,13 @@ class Login extends Component {
           name="email"
           placeholder="E-mail"
           value={ email }
-          onChange={ handleChange }
+          onChange={ this.handleChange }
         />
         <button
           data-testid="btn-play"
           type="button"
           onClick={ () => {} }
-          disabled={ enableButton ? true : undefined }
+          disabled={ enableButton ? undefined : true }
         >
           Jogar
         </button>
