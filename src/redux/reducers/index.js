@@ -1,7 +1,10 @@
 import { combineReducers } from 'redux';
-import player from './player';
+import playerReducer from './player';
 import game from './game';
 
-const rootReducer = combineReducers({ player, game });
+const rootReducer = combineReducers({
+  player: playerReducer,
+  game,
+});
 
 export default rootReducer;

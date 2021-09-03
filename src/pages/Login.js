@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import { loginSubmit as loginSubmitAction,
   fetchToken as fetchTokenAction } from '../redux/actions';
 
@@ -15,6 +16,7 @@ class Login extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleButton = this.handleButton.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleConfigClick = this. handleConfigClick.bind(this);
   }
 
   handleChange({ target: { name, value } }) {
@@ -36,43 +38,57 @@ class Login extends Component {
 
   handleSubmit() {
     const { history, loginSubmit, fetchToken } = this.props;
-    const { name } = this.state;
+    const { name, email } = this.state;
 
     fetchToken();
-    loginSubmit(name);
+    loginSubmit(name, email);
     history.push('/triviagame');
+  }
+
+  handleConfigClick() {
+    const { history } = this.props;
+
+    history.push('/settings');
   }
 
   render() {
     const { name, email, enableButton } = this.state;
-
     return (
-      <fieldset>
-        <input
-          data-testid="input-player-name"
-          type="text"
-          name="name"
-          placeholder="Nome"
-          value={ name }
-          onChange={ this.handleChange }
-        />
-        <input
-          data-testid="input-gravatar-email"
-          type="email"
-          name="email"
-          placeholder="E-mail"
-          value={ email }
-          onChange={ this.handleChange }
-        />
-        <button
-          data-testid="btn-play"
-          type="button"
-          onClick={ this.handleSubmit }
-          disabled={ enableButton ? undefined : true }
-        >
-          Jogar
-        </button>
-      </fieldset>
+      <div>
+        <fieldset>
+          <input
+            data-testid="input-player-name"
+            type="text"
+            name="name"
+            placeholder="Nome"
+            value={ name }
+            onChange={ this.handleChange }
+          />
+          <input
+            data-testid="input-gravatar-email"
+            type="email"
+            name="email"
+            placeholder="E-mail"
+            value={ email }
+            onChange={ this.handleChange }
+          />
+          <button
+            data-testid="btn-play"
+            type="button"
+            onClick={ this.handleSubmit }
+            disabled={ enableButton ? undefined : true }
+          >
+            Jogar
+          </button>
+          <button
+            data-testid="btn-settings"
+            type="button"
+            onClick={ this.handleConfigClick }
+          >
+            Configurações
+          </button>
+        </fieldset>
+      </div>
     );
   }
 }
@@ -84,8 +100,7 @@ Login.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-
-  loginSubmit: (name) => dispatch(loginSubmitAction(name)),
+  loginSubmit: (payload1, payload2) => dispatch(loginSubmitAction(payload1, payload2)),
   fetchToken: () => dispatch(fetchTokenAction()),
 }
 );

@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import logo from './trivia.png';
 import './App.css';
-
-import Login from './pages/login';
+import Feedback from './pages/Feedback';
+import Login from './pages/Login';
+import TriviaGame from './pages/TriviaGame';
+import Settings from './pages/Settings';
 
 export default function App() {
   return (
@@ -16,9 +18,10 @@ export default function App() {
       </header>
       <Switch>
         <Route exact path="/" component={ Login } />
-        <Route exact path="/feedback" component={ FeedBack } />
+        <Route exact path="/settings" component={ Settings } />
+        <Route exact path="/triviagame" component={ TriviaGame } />
+        <Route exact path="/feedback" component={ Feedback } />
       </Switch>
     </div>
   );
 }
-export default App;
