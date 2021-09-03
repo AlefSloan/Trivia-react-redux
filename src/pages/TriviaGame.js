@@ -10,6 +10,8 @@ class TriviaGame extends Component {
     super();
     this.state = {
       questions: [],
+      isEnable: false,
+      timer: 30,
     };
 
     this.fetchQuestions = this.fetchQuestions.bind(this);
@@ -20,11 +22,32 @@ class TriviaGame extends Component {
     this.fetchQuestions(token);
   }
 
+  componentDidUpdate() {
+    const { timer } = this.state;
+    if (timer >= 0) {
+      this.setCountdown();
+    }
+  }
+
+  setCountdown() {
+    const { timer } = this.state;
+    if (timer > 0) {
+      this.countdown(timer);
+    }
+  }
+
   async fetchQuestions(token) {
     const questionsResponse = await ((await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`)).json());
     this.setState({
       questions: questionsResponse.results,
     });
+  }
+
+  countdown(timer) {
+    const oneSecond = 1000;
+    setTimeout(() => this.setState(() => ({
+      timer: timer - 1,
+    })), oneSecond);
   }
 
   applyBorders() {
@@ -38,7 +61,7 @@ class TriviaGame extends Component {
   }
 
   render() {
-    const { questions } = this.state;
+    const { questions, isEnable, timer } = this.state;
     return (
       <main>
         <div>
@@ -48,6 +71,10 @@ class TriviaGame extends Component {
           index === 0
             ? (
               <div key={ index }>
+                <p>
+                  OLHA A HORA:
+                  { timer }
+                </p>
                 <p data-testid="question-category">{question.category}</p>
                 <p data-testid="question-text">{question.question}</p>
                 <button
@@ -55,6 +82,7 @@ class TriviaGame extends Component {
                   className="correct"
                   type="button"
                   data-testid="correct-answer"
+                  disabled={ timer === 0 ? true : isEnable }
                 >
                   { question.correct_answer }
                 </button>
@@ -66,6 +94,7 @@ class TriviaGame extends Component {
                       data-testid={ `wrong-answer-${index2}` }
                       type="button"
                       key={ index2 }
+                      disabled={ timer === 0 ? true : isEnable }
                     >
                       { wrong }
                     </button>))}
