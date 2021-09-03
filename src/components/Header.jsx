@@ -33,11 +33,11 @@ Ranking.propTypes = {
   fetchGravatarIgm: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({ user }) => ({
-  email: user.email,
-  img: user.img,
-  name: user.name,
-  score: user.score,
+const mapStateToProps = ({ player }) => ({
+  email: player.email,
+  img: player.img,
+  name: player.name,
+  score: player.score,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -5,6 +5,7 @@ const actions = {
   FAILED_REQUEST: 'FAILED_REQUEST',
   SET_GRAVATAR_IMG: 'GET_GRAVATAR_IMG',
   LOGIN_SUBMIT: 'LOGIN_SUBMIT',
+  GET_TOKEN: 'GET_TOKEN',
 };
 
 export const loginSubmit = (payload1, payload2) => ({
@@ -23,6 +24,10 @@ export const requestGravatarImg = (payload) => ({
   type: actions.SET_GRAVATAR_IMG, payload,
 });
 
+export const getToken = (payload) => ({
+  type: actions.GET_TOKEN, payload,
+});
+
 export const fetchGravatarIgm = (payload) => async (dispatch) => {
   dispatch(requestApi());
 
@@ -33,6 +38,14 @@ export const fetchGravatarIgm = (payload) => async (dispatch) => {
   } catch (error) {
     dispatch(failedRequest(error.message));
   }
+};
+
+export const fetchToken = () => async (dispatch) => {
+  const URL = 'https://opentdb.com/api';
+  const requestResult = (await (await fetch(`${URL}_token.php?command=request`)).json());
+  console.log(requestResult);
+  localStorage.setItem('token', JSON.stringify(requestResult.token));
+  dispatch(getToken(requestResult.token));
 };
 
 export default actions;

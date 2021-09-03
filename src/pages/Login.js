@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Header from '../components/Header';
-import { loginSubmit as loginSubmitAction } from '../redux/actions';
+import PropTypes from 'prop-types';
+
+import { loginSubmit as loginSubmitAction,
+  fetchToken as fetchTokenAction } from '../redux/actions';
 
 class Login extends Component {
   constructor(props) {
@@ -14,7 +15,8 @@ class Login extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleButton = this.handleButton.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleConfigClick = this.handleConfigClick.bind(this);
   }
 
   handleChange({ target: { name, value } }) {
@@ -34,17 +36,25 @@ class Login extends Component {
     });
   }
 
-  handleClick() {
-    const { loginSubmit } = this.props;
+  handleSubmit() {
+    const { history, loginSubmit, fetchToken } = this.props;
     const { name, email } = this.state;
+
+    fetchToken();
     loginSubmit(name, email);
+    history.push('/triviagame');
+  }
+
+  handleConfigClick() {
+    const { history } = this.props;
+
+    history.push('/settings');
   }
 
   render() {
     const { name, email, enableButton } = this.state;
     return (
       <div>
-        <Header />
         <fieldset>
           <input
             data-testid="input-player-name"
@@ -65,10 +75,17 @@ class Login extends Component {
           <button
             data-testid="btn-play"
             type="button"
-            onClick={ this.handleClick }
+            onClick={ this.handleSubmit }
             disabled={ enableButton ? undefined : true }
           >
             Jogar
+          </button>
+          <button
+            data-testid="btn-settings"
+            type="button"
+            onClick={ this.handleConfigClick }
+          >
+            Configurações
           </button>
         </fieldset>
       </div>
@@ -78,10 +95,14 @@ class Login extends Component {
 
 Login.propTypes = {
   loginSubmit: PropTypes.func.isRequired,
+  fetchToken: PropTypes.func.isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   loginSubmit: (payload1, payload2) => dispatch(loginSubmitAction(payload1, payload2)),
-});
+  fetchToken: () => dispatch(fetchTokenAction()),
+}
+);
 
 export default connect(null, mapDispatchToProps)(Login);

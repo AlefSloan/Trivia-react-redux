@@ -8,7 +8,7 @@ const INITIAL_STATE = {
   loading: false,
 };
 
-function userReducer(state = INITIAL_STATE, action) {
+function playerReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
   case actions.LOGIN_SUBMIT:
     return { ...state, name: action.payload1, email: action.payload2 };
@@ -23,4 +23,4 @@ function userReducer(state = INITIAL_STATE, action) {
   }
 }
 
-export default userReducer;
+export default playerReducer;
