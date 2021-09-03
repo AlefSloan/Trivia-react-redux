@@ -6,10 +6,15 @@ const actions = {
   SET_GRAVATAR_IMG: 'GET_GRAVATAR_IMG',
   LOGIN_SUBMIT: 'LOGIN_SUBMIT',
   GET_TOKEN: 'GET_TOKEN',
+  SET_TIMER: 'SET_TIMER',
 };
 
 export const loginSubmit = (payload1, payload2) => ({
   type: actions.LOGIN_SUBMIT, payload1, payload2,
+});
+
+export const setTimer = (payload) => ({
+  type: actions.SET_TIMER, payload,
 });
 
 export const requestApi = () => ({
