@@ -43,7 +43,6 @@ export const fetchGravatarIgm = (payload) => async (dispatch) => {
 export const fetchToken = () => async (dispatch) => {
   const URL = 'https://opentdb.com/api';
   const requestResult = (await (await fetch(`${URL}_token.php?command=request`)).json());
-  console.log(requestResult);
   localStorage.setItem('token', JSON.stringify(requestResult.token));
   dispatch(getToken(requestResult.token));
 };
