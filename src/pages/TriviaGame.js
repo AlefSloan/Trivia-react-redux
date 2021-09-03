@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
+import '../App.css';
 // import Question from '../components/Question';
 
 class TriviaGame extends Component {
@@ -26,6 +27,16 @@ class TriviaGame extends Component {
     });
   }
 
+  applyBorders() {
+    const rightButton = document.querySelector('.correct');
+    const wrongButton = document.querySelectorAll('.wrong');
+    rightButton.className = 'correct_answer';
+    wrongButton.forEach((button) => {
+      button.className = 'wrong_answer';
+      return null;
+    });
+  }
+
   render() {
     const { questions } = this.state;
     return (
@@ -40,6 +51,8 @@ class TriviaGame extends Component {
                 <p data-testid="question-category">{question.category}</p>
                 <p data-testid="question-text">{question.question}</p>
                 <button
+                  onClick={ this.applyBorders }
+                  className="correct"
                   type="button"
                   data-testid="correct-answer"
                 >
@@ -48,6 +61,8 @@ class TriviaGame extends Component {
                 {question.incorrect_answers
                   .map((wrong, index2) => (
                     <button
+                      onClick={ this.applyBorders }
+                      className="wrong"
                       data-testid={ `wrong-answer-${index2}` }
                       type="button"
                       key={ index2 }
