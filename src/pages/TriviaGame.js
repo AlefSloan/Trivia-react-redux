@@ -17,6 +17,7 @@ class TriviaGame extends Component {
       questions: [],
       isEnable: false,
       timer: 30,
+      answered: false,
     };
 
     this.fetchQuestions = this.fetchQuestions.bind(this);
@@ -96,10 +97,17 @@ class TriviaGame extends Component {
       button.className = 'wrong_answer';
       return null;
     });
+    this.setState({
+      answered: true,
+    });
+  }
+
+  renderNextButton() {
+    return <button type="button" data-testid="btn-next">Próxima</button>;
   }
 
   render() {
-    const { questions, isEnable, timer } = this.state;
+    const { questions, isEnable, timer, answered } = this.state;
     return (
       <main>
         <div>
@@ -126,18 +134,21 @@ class TriviaGame extends Component {
                 >
                   { question.correct_answer }
                 </button>
-                {question.incorrect_answers
-                  .map((wrong, index2) => (
-                    <button
-                      onClick={ this.updateScore }
-                      className="wrong"
-                      data-testid={ `wrong-answer-${index2}` }
-                      type="button"
-                      key={ index2 }
-                      disabled={ timer === 0 ? true : isEnable }
-                    >
-                      { wrong }
-                    </button>))}
+                <div>
+                  {question.incorrect_answers
+                    .map((wrong, index2) => (
+                      <button
+                        onClick={ this.updateScore }
+                        className="wrong"
+                        data-testid={ `wrong-answer-${index2}` }
+                        type="button"
+                        key={ index2 }
+                        disabled={ timer === 0 ? true : isEnable }
+                      >
+                        { wrong }
+                      </button>))}
+                </div>
+                { answered ? this.renderNextButton() : null }
               </div>) : null
         ))}
       </main>
