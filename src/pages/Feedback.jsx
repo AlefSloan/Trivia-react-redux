@@ -8,6 +8,13 @@ class FeedBack extends React.Component {
     super();
 
     this.playAgain = this.playAgain.bind(this);
+    this.getRankingPage = this.getRankingPage.bind(this);
+  }
+
+  getRankingPage() {
+    const { history } = this.props;
+
+    history.push('/ranking');
   }
 
   playAgain() {
@@ -33,6 +40,13 @@ class FeedBack extends React.Component {
           type="button"
         >
           Jogar Novamente
+        </button>
+        <button
+          onClick={ this.getRankingPage }
+          type="button"
+          data-testid="btn-ranking"
+        >
+          Ver Ranking
         </button>
       </div>
     );
