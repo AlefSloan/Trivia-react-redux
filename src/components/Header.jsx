@@ -13,13 +13,13 @@ class Ranking extends React.Component {
     const { img, name, score } = this.props;
     return (
       <div>
+        {console.log()}
         <img
           src={ img }
           alt={ name }
           data-testid="header-profile-picture"
         />
         <p data-testid="header-player-name">{ `Jogador: ${name}` }</p>
-        <p data-testid="feedback-text">Você conseguiu:</p>
         <p data-testid="header-score">{ score }</p>
       </div>
     );
@@ -39,6 +39,7 @@ const mapStateToProps = ({ player }) => ({
   img: player.img,
   name: player.name,
   score: player.score,
+  assertions: player.assertions,
 });
 
 const mapDispatchToProps = (dispatch) => ({
