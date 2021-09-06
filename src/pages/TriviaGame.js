@@ -15,13 +15,17 @@ class TriviaGame extends Component {
     super();
     this.state = {
       questions: [],
+      quest: 0,
       isEnable: false,
       timer: 30,
       answered: false,
+      // isTiming: true,
     };
 
     this.fetchQuestions = this.fetchQuestions.bind(this);
     this.updateScore = this.updateScore.bind(this);
+    this.nextQuestion = this.nextQuestion.bind(this);
+    this.lastQuestion = this.lastQuestion.bind(this);
   }
 
   componentDidMount() {
@@ -102,19 +106,50 @@ class TriviaGame extends Component {
     });
   }
 
+  nextQuestion() {
+    this.setState((state) => ({
+      timer: 30,
+      quest: state.quest + 1,
+      answered: false,
+    }));
+  }
+
+  lastQuestion() {
+    const { history } = this.props;
+
+    history.push('/feedback');
+  }
+
   renderNextButton() {
-    return <button type="button" data-testid="btn-next">Próxima</button>;
+    const number = 4;
+    const { quest } = this.state;
+    return quest === number ? (
+      <button
+        onClick={ this.lastQuestion }
+        type="button"
+        data-testid="btn-next"
+      >
+        Próxima
+      </button>)
+      : (
+        <button
+          onClick={ this.nextQuestion }
+          type="button"
+          data-testid="btn-next"
+        >
+          Próxima
+        </button>);
   }
 
   render() {
-    const { questions, isEnable, timer, answered } = this.state;
+    const { questions, quest, isEnable, timer, answered } = this.state;
     return (
       <main>
         <div>
           <Header />
         </div>
         {questions.map((question, index) => (
-          index === 0
+          index === quest
             ? (
               <div key={ index }>
                 <p>
@@ -168,6 +203,7 @@ const mapDispatchToProps = (dispatch) => ({
 TriviaGame.propTypes = {
   token: PropTypes.string.isRequired,
   submitAnswer: PropTypes.func.isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TriviaGame);
