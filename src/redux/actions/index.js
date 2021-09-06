@@ -7,10 +7,15 @@ const actions = {
   LOGIN_SUBMIT: 'LOGIN_SUBMIT',
   GET_TOKEN: 'GET_TOKEN',
   SET_TIMER: 'SET_TIMER',
+  SUBMIT_ANSWER: 'SUBMIT_ANSWER',
 };
 
 export const loginSubmit = (payload1, payload2) => ({
   type: actions.LOGIN_SUBMIT, payload1, payload2,
+});
+
+export const submitAnswer = (payload) => ({
+  type: actions.SUBMIT_ANSWER, payload,
 });
 
 export const setTimer = (payload) => ({

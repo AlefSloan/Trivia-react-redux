@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { submitAnswer as submitAnswerAction } from '../redux/actions';
 import Header from '../components/Header';
 import '../App.css';
 // import Question from '../components/Question';
+
+const EASY = 1;
+const MEDIUM = 2;
+const HARD = 3;
 
 class TriviaGame extends Component {
   constructor() {
@@ -15,6 +20,7 @@ class TriviaGame extends Component {
     };
 
     this.fetchQuestions = this.fetchQuestions.bind(this);
+    this.updateScore = this.updateScore.bind(this);
   }
 
   componentDidMount() {
@@ -36,11 +42,36 @@ class TriviaGame extends Component {
     }
   }
 
-  async fetchQuestions(token) {
-    const questionsResponse = await ((await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`)).json());
-    this.setState({
-      questions: questionsResponse.results,
-    });
+  getDifficulty(difficulty) {
+    switch (difficulty) {
+    case 'easy':
+      return EASY;
+    case 'medium':
+      return MEDIUM;
+    case 'hard':
+      return HARD;
+    default:
+      return 0;
+    }
+  }
+
+  updateScore({ target }) {
+    const { submitAnswer } = this.props;
+    const { timer } = this.state;
+    const roundPoints = this.calculateScore(timer, target.id);
+    this.applyBorders();
+    if (target.classList.contains('correct_answer')) {
+      submitAnswer(roundPoints);
+      const localState = JSON.parse(localStorage.getItem('state'));
+      localState.player.score += roundPoints;
+      localStorage.setItem('state', JSON.stringify(localState));
+    }
+  }
+
+  calculateScore(timer, difficulty) {
+    const initial = 10;
+    const difficultyLevel = this.getDifficulty(difficulty);
+    return initial + (timer * difficultyLevel);
   }
 
   countdown(timer) {
@@ -48,6 +79,13 @@ class TriviaGame extends Component {
     setTimeout(() => this.setState(() => ({
       timer: timer - 1,
     })), oneSecond);
+  }
+
+  async fetchQuestions(token) {
+    const questionsResponse = await ((await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`)).json());
+    this.setState({
+      questions: questionsResponse.results,
+    });
   }
 
   applyBorders() {
@@ -76,9 +114,11 @@ class TriviaGame extends Component {
                   { timer }
                 </p>
                 <p data-testid="question-category">{question.category}</p>
+                <p>{ `Dificuldade: ${question.difficulty}` }</p>
                 <p data-testid="question-text">{question.question}</p>
                 <button
-                  onClick={ this.applyBorders }
+                  id={ question.difficulty }
+                  onClick={ this.updateScore }
                   className="correct"
                   type="button"
                   data-testid="correct-answer"
@@ -89,7 +129,7 @@ class TriviaGame extends Component {
                 {question.incorrect_answers
                   .map((wrong, index2) => (
                     <button
-                      onClick={ this.applyBorders }
+                      onClick={ this.updateScore }
                       className="wrong"
                       data-testid={ `wrong-answer-${index2}` }
                       type="button"
@@ -110,8 +150,13 @@ const mapStateToProps = ({ game }) => ({
 }
 );
 
+const mapDispatchToProps = (dispatch) => ({
+  submitAnswer: (playerScore) => dispatch(submitAnswerAction(playerScore)),
+});
+
 TriviaGame.propTypes = {
   token: PropTypes.string.isRequired,
+  submitAnswer: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, null)(TriviaGame);
+export default connect(mapStateToProps, mapDispatchToProps)(TriviaGame);

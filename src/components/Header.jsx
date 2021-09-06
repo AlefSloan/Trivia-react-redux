@@ -18,8 +18,8 @@ class Ranking extends React.Component {
           alt={ name }
           data-testid="header-profile-picture"
         />
-        <p data-testid="header-player-name">{ name }</p>
-        <p data-testid="header-score">{ score }</p>
+        <p data-testid="header-player-name">{ `Jogador: ${name}` }</p>
+        <p data-testid="header-score">{ `Pontuação: ${score}` }</p>
       </div>
     );
   }
