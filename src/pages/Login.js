@@ -37,11 +37,15 @@ class Login extends Component {
   }
 
   handleSubmit() {
-    const { history, loginSubmit, fetchToken } = this.props;
+    const { history, loginSubmit, fetchToken, assertions, score, img } = this.props;
     const { name, email } = this.state;
+    const gravatarEmail = img;
 
     fetchToken();
     loginSubmit(name, email);
+
+    const state = { player: { name, assertions, score, gravatarEmail } };
+    localStorage.setItem('state', JSON.stringify(state));
     history.push('/triviagame');
   }
 
@@ -97,7 +101,16 @@ Login.propTypes = {
   loginSubmit: PropTypes.func.isRequired,
   fetchToken: PropTypes.func.isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,
+  score: PropTypes.number.isRequired,
+  assertions: PropTypes.number.isRequired,
+  img: PropTypes.string.isRequired,
 };
+
+const mapStateToProps = ({ player }) => ({
+  score: player.score,
+  assertions: player.assertions,
+  img: player.img,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   loginSubmit: (payload1, payload2) => dispatch(loginSubmitAction(payload1, payload2)),
@@ -105,4 +118,4 @@ const mapDispatchToProps = (dispatch) => ({
 }
 );
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
