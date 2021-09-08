@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from '../css/Login.module.css';
+import logo from '../trivia.png';
 import { loginSubmit as loginSubmitAction,
   fetchToken as fetchTokenAction } from '../redux/actions';
 
@@ -59,6 +60,9 @@ class Login extends Component {
     const { name, email, enableButton } = this.state;
     return (
       <div>
+        <div className="App">
+          <img src={ logo } className="App-logo" alt="logo" />
+        </div>
         <fieldset className={ styles.loginField }>
           <input
             className={ styles.loginName }

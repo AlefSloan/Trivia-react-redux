@@ -1,0 +1,36 @@
+.gameHeader {
+  background-color: #fea418;
+  border-color: #7ea8df;
+  border-radius: 5px;
+  height: 100px;
+}
+
+.questionBox {
+  background-color: #e9f7f6;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px #7ea8df;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px;
+  width: 40%;
+}
+
+.gameSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.questionInfo {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+button {
+  background-color: white;
+  border-color: white;
+  border-radius: 4px;
+  height: 30px;
+  margin-top: 10px;
+}

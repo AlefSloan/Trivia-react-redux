@@ -24,6 +24,7 @@
 .buttonPlay {
   background-color: white;
   border-color: white;
+  height: auto;
   margin-top: 2px;
   padding: 2px;
   width: 100px;
@@ -31,6 +32,7 @@
 
 button:hover {
   background-color: #a2b3c9;
+  border-color: #a2b3c9;
   padding: 5px;
 }
 

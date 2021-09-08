@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchGravatarIgm as fetchGravatarIgmAction } from '../redux/actions';
+import styles from '../css/Header.module.css';
 
 class PlayerHeader extends React.Component {
   componentDidMount() {
@@ -12,7 +13,7 @@ class PlayerHeader extends React.Component {
   render() {
     const { img, name, score } = this.props;
     return (
-      <div>
+      <div className={ styles.headerInfo }>
         {console.log()}
         <img
           src={ img }
