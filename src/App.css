@@ -3,7 +3,8 @@
 }
 
 .App-logo {
-  height: 10vmin;
+  height: 40vmin;
+  margin-top: 10px;
   pointer-events: none;
 }
 
@@ -24,7 +25,7 @@
 
 .App-header {
   align-items: center;
-  background-color: #282c34;
+  background-color: #3b5a99;
   color: white;
   display: flex;
   flex-direction: column;
@@ -62,4 +63,8 @@
 
 .wrong_answer {
   border: 3px solid red;
+}
+
+body {
+  background-color: #3b5a99;
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import styles from '../css/Login.module.css';
 import { loginSubmit as loginSubmitAction,
   fetchToken as fetchTokenAction } from '../redux/actions';
 
@@ -59,8 +59,9 @@ class Login extends Component {
     const { name, email, enableButton } = this.state;
     return (
       <div>
-        <fieldset>
+        <fieldset className={ styles.loginField }>
           <input
+            className={ styles.loginName }
             data-testid="input-player-name"
             type="text"
             name="name"
@@ -69,6 +70,7 @@ class Login extends Component {
             onChange={ this.handleChange }
           />
           <input
+            className={ styles.loginEmail }
             data-testid="input-gravatar-email"
             type="email"
             name="email"
@@ -77,6 +79,7 @@ class Login extends Component {
             onChange={ this.handleChange }
           />
           <button
+            className={ styles.buttonPlay }
             data-testid="btn-play"
             type="button"
             onClick={ this.handleSubmit }
@@ -85,6 +88,7 @@ class Login extends Component {
             Jogar
           </button>
           <button
+            className={ styles.buttonPlay }
             data-testid="btn-settings"
             type="button"
             onClick={ this.handleConfigClick }
