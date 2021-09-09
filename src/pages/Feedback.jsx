@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
+import styles from '../css/Feedback.module.css';
 
 class FeedBack extends React.Component {
   constructor() {
@@ -29,7 +30,9 @@ class FeedBack extends React.Component {
     const messageText = assertions >= limiar ? 'Mandou bem!' : 'Podia ser melhor...';
     return (
       <div>
-        <Header />
+        <div className={ styles.headerFeed }>
+          <Header />
+        </div>
         <p data-testid="feedback-text">{ messageText }</p>
         <p data-testid="feedback-total-question"> 0 </p>
         <p> Pontuação Final </p>

@@ -1,0 +1,38 @@
+.loginName {
+  height: 25px;
+  margin: 10px;
+  width: 300px;
+}
+
+.loginEmail {
+  height: 25px;
+  margin: 10px;
+  width: 300px;
+}
+
+.loginField {
+  align-items: center;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.buttonPlay {
+  background-color: white;
+  border-color: white;
+  height: auto;
+  margin-top: 2px;
+  padding: 2px;
+  width: 100px;
+}
+
+button:hover {
+  background-color: #a2b3c9;
+  border-color: #a2b3c9;
+  padding: 5px;
+}
+

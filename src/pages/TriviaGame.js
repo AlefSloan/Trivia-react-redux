@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { submitAnswer as submitAnswerAction } from '../redux/actions';
 import Header from '../components/Header';
 import '../App.css';
+import styles from '../css/TriviaGame.module.css';
 // import Question from '../components/Question';
 
 const EASY = 1;
@@ -144,32 +145,34 @@ class TriviaGame extends Component {
   render() {
     const { questions, quest, isEnable, timer, answered } = this.state;
     return (
-      <main>
-        <div>
+      <main className={ styles.mainGame }>
+        <div className={ styles.gameHeader }>
           <Header />
         </div>
-        {questions.map((question, index) => (
-          index === quest
-            ? (
-              <div key={ index }>
-                <p>
-                  OLHA A HORA:
-                  { timer }
-                </p>
-                <p data-testid="question-category">{question.category}</p>
-                <p>{ `Dificuldade: ${question.difficulty}` }</p>
-                <p data-testid="question-text">{question.question}</p>
-                <button
-                  id={ question.difficulty }
-                  onClick={ this.updateScore }
-                  className="correct"
-                  type="button"
-                  data-testid="correct-answer"
-                  disabled={ timer === 0 ? true : isEnable }
-                >
-                  { question.correct_answer }
-                </button>
-                <div>
+        <div className={ styles.gameSection }>
+          {questions.map((question, index) => (
+            index === quest
+              ? (
+                <div className={ styles.questionBox } key={ index }>
+                  <div className={ styles.questionInfo }>
+                    <p>
+                      OLHA A HORA:
+                      { timer }
+                    </p>
+                    <p data-testid="question-category">{question.category}</p>
+                    <p>{ `Dificuldade: ${question.difficulty}` }</p>
+                  </div>
+                  <p data-testid="question-text">{question.question}</p>
+                  <button
+                    id={ question.difficulty }
+                    onClick={ this.updateScore }
+                    className="correct"
+                    type="button"
+                    data-testid="correct-answer"
+                    disabled={ timer === 0 ? true : isEnable }
+                  >
+                    { question.correct_answer }
+                  </button>
                   {question.incorrect_answers
                     .map((wrong, index2) => (
                       <button
@@ -182,10 +185,10 @@ class TriviaGame extends Component {
                       >
                         { wrong }
                       </button>))}
-                </div>
-                { answered ? this.renderNextButton() : null }
-              </div>) : null
-        ))}
+                  { answered ? this.renderNextButton() : null }
+                </div>) : null
+          ))}
+        </div>
       </main>
     );
   }

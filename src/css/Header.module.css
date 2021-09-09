@@ -1,0 +1,6 @@
+.headerInfo {
+  color: black;
+  display: flex;
+  font-size: 30px;
+  justify-content: space-evenly;
+}
