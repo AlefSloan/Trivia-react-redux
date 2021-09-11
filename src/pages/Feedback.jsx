@@ -34,7 +34,7 @@ class FeedBack extends React.Component {
           <Header />
         </div>
         <p data-testid="feedback-text">{ messageText }</p>
-        <p data-testid="feedback-total-question"> 0 </p>
+        <p data-testid="feedback-total-question">{ assertions }</p>
         <p> Pontuação Final </p>
         <p data-testid="feedback-total-score">{ score }</p>
         <button

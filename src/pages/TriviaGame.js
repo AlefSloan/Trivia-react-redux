@@ -70,6 +70,7 @@ class TriviaGame extends Component {
       submitAnswer(roundPoints);
       const localState = JSON.parse(localStorage.getItem('state'));
       localState.player.score += roundPoints;
+      localState.player.assertions += 1;
       localStorage.setItem('state', JSON.stringify(localState));
     }
   }
@@ -116,7 +117,11 @@ class TriviaGame extends Component {
   }
 
   lastQuestion() {
-    const { history } = this.props;
+    const { history, name, score, imgGravatar } = this.props;
+    const personRank = { name, score, picture: imgGravatar };
+    const rank = JSON.parse(localStorage.getItem('ranking'));
+    rank.push(personRank);
+    localStorage.setItem('ranking', JSON.stringify(rank));
 
     history.push('/feedback');
   }
@@ -194,8 +199,11 @@ class TriviaGame extends Component {
   }
 }
 
-const mapStateToProps = ({ game }) => ({
-  token: game.token,
+const mapStateToProps = (state) => ({
+  token: state.game.token,
+  name: state.player.name,
+  score: state.player.score,
+  imgGravatar: state.player.img,
 }
 );
 
@@ -207,6 +215,9 @@ TriviaGame.propTypes = {
   token: PropTypes.string.isRequired,
   submitAnswer: PropTypes.func.isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,
+  name: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  imgGravatar: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TriviaGame);

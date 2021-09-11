@@ -47,6 +47,10 @@ class Login extends Component {
 
     const state = { player: { name, assertions, score, gravatarEmail } };
     localStorage.setItem('state', JSON.stringify(state));
+    if (localStorage.getItem('ranking') === null) {
+      const ranking = [];
+      localStorage.setItem('ranking', JSON.stringify(ranking));
+    }
     history.push('/triviagame');
   }
 
