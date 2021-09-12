@@ -22,6 +22,7 @@ class Login extends Component {
     this.handleDisabledButton = this.handleDisabledButton.bind(this);
     this.handlePlayClick = this.handlePlayClick.bind(this);
     this.handleConfigClick = this.handleConfigClick.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
   }
 
   handleChange({ target: { name, value } }) {
@@ -64,7 +65,7 @@ class Login extends Component {
     history.push('/settings');
   }
 
-  render() {
+  renderLogin() {
     const { name, email, enableButton } = this.state;
     return (
       <div>
@@ -104,6 +105,14 @@ class Login extends Component {
             buttonText="Configurações"
           />
         </fieldset>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        { this.renderLogin() }
       </div>
     );
   }

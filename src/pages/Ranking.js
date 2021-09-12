@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { connect } from 'react-redux';
+import { playAgain as playAgainAction } from '../redux/actions';
+
+import Button from '../components/Button';
+import RankingScreen from '../components/RankingScreen';
+
 class Ranking extends Component {
   constructor() {
     super();
@@ -9,41 +15,27 @@ class Ranking extends Component {
   }
 
   goHomeHandler() {
-    const { history } = this.props;
+    const { history, playAgain } = this.props;
+
+    playAgain();
 
     history.push('/');
   }
 
   render() {
-    const localRanking = JSON.parse(localStorage.getItem('ranking'));
     return (
       <div>
         <div>
           <h2 data-testid="ranking-title">Tela de Ranking</h2>
         </div>
+        <RankingScreen />
         <div>
-          {localRanking.sort((a, b) => b.score - a.score).map((rank, index) => (
-            <div key={ index }>
-              <img src={ rank.picture } alt="rank" />
-              <p data-testid={ `player-score-${index}` }>
-                Score:
-                { rank.score }
-              </p>
-              <p data-testid={ `player-name-${index}` }>
-                Name:
-                { rank.name }
-              </p>
-            </div>
-          ))}
-        </div>
-        <div>
-          <button
-            onClick={ this.goHomeHandler }
-            data-testid="btn-go-home"
-            type="button"
-          >
-            Tela inicial
-          </button>
+          <Button
+            buttonFunction={ this.goHomeHandler }
+            className="go-home-button"
+            dataTest="btn-go-home"
+            buttonText="Tela inicial"
+          />
         </div>
       </div>
     );
@@ -52,6 +44,11 @@ class Ranking extends Component {
 
 Ranking.propTypes = {
   history: PropTypes.objectOf(PropTypes.any).isRequired,
+  playAgain: PropTypes.func.isRequired,
 };
 
-export default Ranking;
+const mapDispatchToProps = (dispatch) => ({
+  playAgain: (playerInfo) => dispatch(playAgainAction(playerInfo)),
+});
+
+export default connect(null, mapDispatchToProps)(Ranking);

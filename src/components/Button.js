@@ -9,10 +9,12 @@ class Button extends Component {
       dataTest,
       buttonFunction,
       isDisabled,
+      buttonId,
     } = this.props;
     return (
       <button
         type="button"
+        id={ buttonId }
         className={ className }
         data-testid={ dataTest }
         onClick={ buttonFunction }
@@ -30,10 +32,12 @@ Button.propTypes = {
   dataTest: PropTypes.string.isRequired,
   buttonFunction: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool,
+  buttonId: PropTypes.string,
 };
 
 Button.defaultProps = {
   isDisabled: false,
+  buttonId: null,
 };
 
 export default Button;
