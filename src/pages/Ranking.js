@@ -12,6 +12,7 @@ class Ranking extends Component {
     super();
 
     this.goHomeHandler = this.goHomeHandler.bind(this);
+    this.renderRanking = this.renderRanking.bind(this);
   }
 
   goHomeHandler() {
@@ -22,7 +23,7 @@ class Ranking extends Component {
     history.push('/');
   }
 
-  render() {
+  renderRanking() {
     return (
       <div>
         <div>
@@ -37,6 +38,14 @@ class Ranking extends Component {
             buttonText="Tela inicial"
           />
         </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        { this.renderRanking() }
       </div>
     );
   }

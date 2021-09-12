@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import { playAgain as playAgainAction } from '../redux/actions';
+
 import PlayerHeader from '../components/PlayerHeader';
 import styles from '../css/Feedback.module.css';
+import Button from '../components/Button';
 
 class FeedBack extends React.Component {
   constructor() {
@@ -11,6 +14,7 @@ class FeedBack extends React.Component {
 
     this.handlePlayAgain = this.handlePlayAgain.bind(this);
     this.getRankingPage = this.getRankingPage.bind(this);
+    this.renderFeedback = this.renderFeedback.bind(this);
   }
 
   getRankingPage() {
@@ -21,15 +25,17 @@ class FeedBack extends React.Component {
 
   handlePlayAgain() {
     const { history, playAgain } = this.props;
+
     playAgain();
 
     history.push('/');
   }
 
-  render() {
+  renderFeedback() {
     const { assertions, score } = this.props;
     const limiar = 3;
     const messageText = assertions >= limiar ? 'Mandou bem!' : 'Podia ser melhor...';
+
     return (
       <div>
         <div className={ styles.headerFeed }>
@@ -39,20 +45,26 @@ class FeedBack extends React.Component {
         <p data-testid="feedback-total-question">{ assertions }</p>
         <p> Pontuação Final </p>
         <p data-testid="feedback-total-score">{ score }</p>
-        <button
-          onClick={ this.handlePlayAgain }
-          data-testid="btn-play-again"
-          type="button"
-        >
-          Jogar Novamente
-        </button>
-        <button
-          onClick={ this.getRankingPage }
-          type="button"
-          data-testid="btn-ranking"
-        >
-          Ver Ranking
-        </button>
+        <Button
+          buttonFunction={ this.handlePlayAgain }
+          className="play-again-button"
+          dataTest="btn-play-again"
+          buttonText="Jogar Novamente"
+        />
+        <Button
+          buttonFunction={ this.getRankingPage }
+          className="ranking-page-button"
+          dataTest="btn-ranking"
+          buttonText="Ver Ranking"
+        />
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        { this.renderFeedback() }
       </div>
     );
   }
