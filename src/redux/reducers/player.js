@@ -21,6 +21,8 @@ function playerReducer(state = INITIAL_STATE, action) {
     };
   case actions.REQUEST_API:
     return { ...state, loading: true };
+  case actions.PLAY_AGAIN:
+    return { name: '', email: '', img: '', score: 0, assertions: 0, loading: false };
   case actions.SET_GRAVATAR_IMG:
     return { ...state, loading: false, img: action.payload };
   case actions.FAILED_REQUEST:

@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { submitAnswer as submitAnswerAction } from '../redux/actions';
-import Header from '../components/Header';
+import PlayerHeader from '../components/PlayerHeader';
 import '../App.css';
 import styles from '../css/TriviaGame.module.css';
-// import Question from '../components/Question';
+import Question from '../components/Question';
+import Button from '../components/Button';
+import CorrectSound from '../audio/Correct.wav';
+import WrongSound from '../audio/Wrong.wav';
 
 const EASY = 1;
 const MEDIUM = 2;
@@ -20,30 +23,38 @@ class TriviaGame extends Component {
       isEnable: false,
       timer: 30,
       answered: false,
-      // isTiming: true,
+      isTiming: true,
+      isPlaying: true,
+      music: null,
     };
 
     this.fetchQuestions = this.fetchQuestions.bind(this);
     this.updateScore = this.updateScore.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
     this.lastQuestion = this.lastQuestion.bind(this);
+    this.renderGame = this.renderGame.bind(this);
+    this.answerSound = this.answerSound.bind(this);
+    this.soundPlay = this.soundPlay.bind(this);
   }
 
   componentDidMount() {
     const { token } = this.props;
+
     this.fetchQuestions(token);
   }
 
   componentDidUpdate() {
     const { timer } = this.state;
+
     if (timer >= 0) {
       this.setCountdown();
     }
   }
 
   setCountdown() {
-    const { timer } = this.state;
-    if (timer > 0) {
+    const { timer, isTiming } = this.state;
+
+    if (timer > 0 && isTiming) {
       this.countdown(timer);
     }
   }
@@ -61,17 +72,43 @@ class TriviaGame extends Component {
     }
   }
 
+  answerSound(target) {
+    if (target.classList.contains('correct_answer')) {
+      this.setState({
+        music: 'correct',
+      });
+    } else if (target.classList.contains('wrong_answer')) {
+      this.setState({
+        music: 'wrong',
+      });
+    }
+  }
+
   updateScore({ target }) {
     const { submitAnswer } = this.props;
-    const { timer } = this.state;
+    const { timer, isPlaying } = this.state;
+
     const roundPoints = this.calculateScore(timer, target.id);
-    this.applyBorders();
-    if (target.classList.contains('correct_answer')) {
+
+    if (!(target.classList.contains('correct_answer')
+    || target.classList.contains('wrong_answer'))) {
+      this.applyBorders();
+    }
+
+    if (target.classList.contains('correct_answer') && isPlaying) {
       submitAnswer(roundPoints);
       const localState = JSON.parse(localStorage.getItem('state'));
       localState.player.score += roundPoints;
+      localState.player.assertions += 1;
       localStorage.setItem('state', JSON.stringify(localState));
     }
+
+    this.answerSound(target);
+
+    this.setState({
+      isPlaying: false,
+      isTiming: false,
+    });
   }
 
   calculateScore(timer, difficulty) {
@@ -94,10 +131,21 @@ class TriviaGame extends Component {
     });
   }
 
+  soundPlay() {
+    const { music } = this.state;
+    if (music === 'correct') {
+      return CorrectSound;
+    } if (music === 'wrong') {
+      return WrongSound;
+    }
+    return null;
+  }
+
   applyBorders() {
-    const rightButton = document.querySelector('.correct');
+    const correctButton = document.querySelector('.correct');
     const wrongButton = document.querySelectorAll('.wrong');
-    rightButton.className = 'correct_answer';
+
+    correctButton.className = 'correct_answer';
     wrongButton.forEach((button) => {
       button.className = 'wrong_answer';
       return null;
@@ -112,11 +160,19 @@ class TriviaGame extends Component {
       timer: 30,
       quest: state.quest + 1,
       answered: false,
+      isPlaying: true,
+      isTiming: true,
+      music: null,
     }));
   }
 
   lastQuestion() {
-    const { history } = this.props;
+    const { history, name, score, imgGravatar } = this.props;
+
+    const personRank = { name, score, picture: imgGravatar };
+    const rank = JSON.parse(localStorage.getItem('ranking'));
+    rank.push(personRank);
+    localStorage.setItem('ranking', JSON.stringify(rank));
 
     history.push('/feedback');
   }
@@ -124,78 +180,66 @@ class TriviaGame extends Component {
   renderNextButton() {
     const number = 4;
     const { quest } = this.state;
+
     return quest === number ? (
-      <button
-        onClick={ this.lastQuestion }
-        type="button"
-        data-testid="btn-next"
-      >
-        Próxima
-      </button>)
+      <Button
+        buttonFunction={ this.lastQuestion }
+        dataTest="btn-next"
+        buttonText="Próxima"
+        className="next-button"
+      />
+    )
       : (
-        <button
-          onClick={ this.nextQuestion }
-          type="button"
-          data-testid="btn-next"
-        >
-          Próxima
-        </button>);
+        <Button
+          buttonFunction={ this.nextQuestion }
+          dataTest="btn-next"
+          buttonText="Próxima"
+          className="next-button"
+        />
+      );
+  }
+
+  renderGame() {
+    const { questions, quest, isEnable, timer, answered } = this.state;
+
+    return (
+      <div>
+        <audio src={ this.soundPlay() } autoPlay>
+          <track kind="captions" />
+          O seu navegador não suporta o elemento
+          <code>audio</code>
+        </audio>
+        <div className={ styles.gameHeader }>
+          <PlayerHeader />
+        </div>
+        <div className={ styles.gameSection }>
+          <Question
+            questions={ questions }
+            quest={ quest }
+            isEnable={ isEnable }
+            timer={ timer }
+            buttonFunction={ this.updateScore }
+          />
+          { answered || timer === 0 ? this.renderNextButton() : null }
+        </div>
+      </div>
+    );
   }
 
   render() {
-    const { questions, quest, isEnable, timer, answered } = this.state;
     return (
       <main className={ styles.mainGame }>
-        <div className={ styles.gameHeader }>
-          <Header />
-        </div>
-        <div className={ styles.gameSection }>
-          {questions.map((question, index) => (
-            index === quest
-              ? (
-                <div className={ styles.questionBox } key={ index }>
-                  <div className={ styles.questionInfo }>
-                    <p>
-                      OLHA A HORA:
-                      { timer }
-                    </p>
-                    <p data-testid="question-category">{question.category}</p>
-                    <p>{ `Dificuldade: ${question.difficulty}` }</p>
-                  </div>
-                  <p data-testid="question-text">{question.question}</p>
-                  <button
-                    id={ question.difficulty }
-                    onClick={ this.updateScore }
-                    className="correct"
-                    type="button"
-                    data-testid="correct-answer"
-                    disabled={ timer === 0 ? true : isEnable }
-                  >
-                    { question.correct_answer }
-                  </button>
-                  {question.incorrect_answers
-                    .map((wrong, index2) => (
-                      <button
-                        onClick={ this.updateScore }
-                        className="wrong"
-                        data-testid={ `wrong-answer-${index2}` }
-                        type="button"
-                        key={ index2 }
-                        disabled={ timer === 0 ? true : isEnable }
-                      >
-                        { wrong }
-                      </button>))}
-                  { answered ? this.renderNextButton() : null }
-                </div>) : null
-          ))}
-        </div>
+        {this.renderGame()}
       </main>
     );
   }
 }
 
-const mapStateToProps = ({ game }) => ({
-  token: game.token,
+const mapStateToProps = (state) => ({
+  token: state.game.token,
+  name: state.player.name,
+  score: state.player.score,
+  imgGravatar: state.player.img,
 }
 );
 
@@ -207,6 +251,9 @@ TriviaGame.propTypes = {
   token: PropTypes.string.isRequired,
   submitAnswer: PropTypes.func.isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,
+  name: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  imgGravatar: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TriviaGame);

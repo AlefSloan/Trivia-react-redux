@@ -8,7 +8,12 @@ const actions = {
   GET_TOKEN: 'GET_TOKEN',
   SET_TIMER: 'SET_TIMER',
   SUBMIT_ANSWER: 'SUBMIT_ANSWER',
+  PLAY_AGAIN: 'PLAY_AGAIN',
 };
+
+export const playAgain = (payload) => ({
+  type: actions.PLAY_AGAIN, payload,
+});
 
 export const loginSubmit = (payload1, payload2) => ({
   type: actions.LOGIN_SUBMIT, payload1, payload2,

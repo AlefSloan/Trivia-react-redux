@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import styles from '../css/Login.module.css';
-import logo from '../trivia.png';
+
+import { connect } from 'react-redux';
 import { loginSubmit as loginSubmitAction,
   fetchToken as fetchTokenAction } from '../redux/actions';
+
+import logo from '../trivia.png';
+import styles from '../css/Login.module.css';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 class Login extends Component {
   constructor(props) {
@@ -15,38 +19,43 @@ class Login extends Component {
       enableButton: false,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleButton = this.handleButton.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDisabledButton = this.handleDisabledButton.bind(this);
+    this.handlePlayClick = this.handlePlayClick.bind(this);
     this.handleConfigClick = this.handleConfigClick.bind(this);
+    this.renderLogin = this.renderLogin.bind(this);
   }
 
   handleChange({ target: { name, value } }) {
     this.setState({
       [name]: value,
-    });
-    this.handleButton();
+    }, () => this.handleDisabledButton());
   }
 
-  handleButton() {
+  handleDisabledButton() {
     const { email, name } = this.state;
-    const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/g;
-    const verifyEmail = emailCheck.test(email);
-    const isValid = verifyEmail && name.length > 0;
+
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/g;
+
     this.setState({
-      enableButton: isValid,
+      enableButton: validEmail.test(email) && name.length > 0,
     });
   }
 
-  handleSubmit() {
+  handlePlayClick() {
     const { history, loginSubmit, fetchToken, assertions, score, img } = this.props;
     const { name, email } = this.state;
-    const gravatarEmail = img;
 
     fetchToken();
     loginSubmit(name, email);
 
-    const state = { player: { name, assertions, score, gravatarEmail } };
+    const state = { player: { name, assertions, score, gravatarEmail: img } };
     localStorage.setItem('state', JSON.stringify(state));
+
+    if (localStorage.getItem('ranking') === null) {
+      const ranking = [];
+      localStorage.setItem('ranking', JSON.stringify(ranking));
+    }
+
     history.push('/triviagame');
   }
 
@@ -56,7 +65,7 @@ class Login extends Component {
     history.push('/settings');
   }
 
-  render() {
+  renderLogin() {
     const { name, email, enableButton } = this.state;
     return (
       <div>
@@ -64,42 +73,46 @@ class Login extends Component {
           <img src={ logo } className="App-logo" alt="logo" />
         </div>
         <fieldset className={ styles.loginField }>
-          <input
+          <Input
             className={ styles.loginName }
-            data-testid="input-player-name"
-            type="text"
-            name="name"
-            placeholder="Nome"
-            value={ name }
-            onChange={ this.handleChange }
+            dataTest="input-player-name"
+            inputType="text"
+            inputName="name"
+            inputPlaceholder="Nome"
+            inputValue={ name }
+            inputFunction={ this.handleChange }
           />
-          <input
+          <Input
             className={ styles.loginEmail }
-            data-testid="input-gravatar-email"
-            type="email"
-            name="email"
-            placeholder="E-mail"
-            value={ email }
-            onChange={ this.handleChange }
+            dataTest="input-gravatar-email"
+            inputType="email"
+            inputName="email"
+            inputPlaceholder="E-mail"
+            inputValue={ email }
+            inputFunction={ this.handleChange }
           />
-          <button
+          <Button
             className={ styles.buttonPlay }
-            data-testid="btn-play"
-            type="button"
-            onClick={ this.handleSubmit }
-            disabled={ enableButton ? undefined : true }
-          >
-            Jogar
-          </button>
-          <button
+            dataTest="btn-play"
+            buttonFunction={ this.handlePlayClick }
+            isDisabled={ enableButton ? undefined : true }
+            buttonText="Jogar"
+          />
+          <Button
             className={ styles.buttonPlay }
-            data-testid="btn-settings"
-            type="button"
-            onClick={ this.handleConfigClick }
-          >
-            Configurações
-          </button>
+            dataTest="btn-settings"
+            buttonFunction={ this.handleConfigClick }
+            buttonText="Configurações"
+          />
         </fieldset>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        { this.renderLogin() }
       </div>
     );
   }
