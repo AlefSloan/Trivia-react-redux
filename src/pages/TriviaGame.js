@@ -7,6 +7,8 @@ import '../App.css';
 import styles from '../css/TriviaGame.module.css';
 import Question from '../components/Question';
 import Button from '../components/Button';
+import CorrectSound from '../audio/Correct.wav';
+import WrongSound from '../audio/Wrong.wav';
 
 const EASY = 1;
 const MEDIUM = 2;
@@ -23,6 +25,7 @@ class TriviaGame extends Component {
       answered: false,
       isTiming: true,
       isPlaying: true,
+      music: null,
     };
 
     this.fetchQuestions = this.fetchQuestions.bind(this);
@@ -30,6 +33,8 @@ class TriviaGame extends Component {
     this.nextQuestion = this.nextQuestion.bind(this);
     this.lastQuestion = this.lastQuestion.bind(this);
     this.renderGame = this.renderGame.bind(this);
+    this.answerSound = this.answerSound.bind(this);
+    this.soundPlay = this.soundPlay.bind(this);
   }
 
   componentDidMount() {
@@ -67,6 +72,18 @@ class TriviaGame extends Component {
     }
   }
 
+  answerSound(target) {
+    if (target.classList.contains('correct_answer')) {
+      this.setState({
+        music: 'correct',
+      });
+    } else if (target.classList.contains('wrong_answer')) {
+      this.setState({
+        music: 'wrong',
+      });
+    }
+  }
+
   updateScore({ target }) {
     const { submitAnswer } = this.props;
     const { timer, isPlaying } = this.state;
@@ -85,6 +102,9 @@ class TriviaGame extends Component {
       localState.player.assertions += 1;
       localStorage.setItem('state', JSON.stringify(localState));
     }
+
+    this.answerSound(target);
+
     this.setState({
       isPlaying: false,
       isTiming: false,
@@ -111,6 +131,16 @@ class TriviaGame extends Component {
     });
   }
 
+  soundPlay() {
+    const { music } = this.state;
+    if (music === 'correct') {
+      return CorrectSound;
+    } if (music === 'wrong') {
+      return WrongSound;
+    }
+    return null;
+  }
+
   applyBorders() {
     const correctButton = document.querySelector('.correct');
     const wrongButton = document.querySelectorAll('.wrong');
@@ -132,6 +162,7 @@ class TriviaGame extends Component {
       answered: false,
       isPlaying: true,
       isTiming: true,
+      music: null,
     }));
   }
 
@@ -173,6 +204,11 @@ class TriviaGame extends Component {
 
     return (
       <div>
+        <audio src={ this.soundPlay() } autoPlay>
+          <track kind="captions" />
+          O seu navegador não suporta o elemento
+          <code>audio</code>
+        </audio>
         <div className={ styles.gameHeader }>
           <PlayerHeader />
         </div>
@@ -184,7 +220,7 @@ class TriviaGame extends Component {
             timer={ timer }
             buttonFunction={ this.updateScore }
           />
-          { answered ? this.renderNextButton() : null }
+          { answered || timer === 0 ? this.renderNextButton() : null }
         </div>
       </div>
     );
