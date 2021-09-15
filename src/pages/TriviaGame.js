@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { submitAnswer as submitAnswerAction } from '../redux/actions';
+import { shuffledAnswers, calculateScore } from '../services/index';
 import PlayerHeader from '../components/PlayerHeader';
 import '../App.css';
 import styles from '../css/TriviaGame.module.css';
@@ -9,10 +10,6 @@ import Question from '../components/Question';
 import Button from '../components/Button';
 import CorrectSound from '../audio/Correct.wav';
 import WrongSound from '../audio/Wrong.wav';
-
-const EASY = 1;
-const MEDIUM = 2;
-const HARD = 3;
 
 class TriviaGame extends Component {
   constructor() {
@@ -24,8 +21,9 @@ class TriviaGame extends Component {
       timer: 30,
       answered: false,
       isTiming: true,
-      isPlaying: true,
+      isPlaying: false,
       music: null,
+      initial: false,
     };
 
     this.fetchQuestions = this.fetchQuestions.bind(this);
@@ -35,6 +33,7 @@ class TriviaGame extends Component {
     this.renderGame = this.renderGame.bind(this);
     this.answerSound = this.answerSound.bind(this);
     this.soundPlay = this.soundPlay.bind(this);
+    this.setNewQuestions = this.setNewQuestions.bind(this);
   }
 
   componentDidMount() {
@@ -43,32 +42,31 @@ class TriviaGame extends Component {
     this.fetchQuestions(token);
   }
 
-  componentDidUpdate() {
-    const { timer } = this.state;
-
+  componentDidUpdate(prevState) {
+    const { timer, questions, initial } = this.state;
+    if (prevState.questions !== questions && initial === false) {
+      console.log(questions, 'Alef');
+      if (questions.length > 0) {
+        this.setNewQuestions(shuffledAnswers(questions));
+      }
+    }
     if (timer >= 0) {
       this.setCountdown();
     }
   }
 
-  setCountdown() {
-    const { timer, isTiming } = this.state;
-
-    if (timer > 0 && isTiming) {
-      this.countdown(timer);
-    }
+  setNewQuestions(newQuestions) {
+    this.setState({
+      questions: newQuestions,
+      isPlaying: true,
+      initial: true,
+    });
   }
 
-  getDifficulty(difficulty) {
-    switch (difficulty) {
-    case 'easy':
-      return EASY;
-    case 'medium':
-      return MEDIUM;
-    case 'hard':
-      return HARD;
-    default:
-      return 0;
+  setCountdown() {
+    const { timer, isTiming } = this.state;
+    if (timer > 0 && isTiming) {
+      this.countdown(timer);
     }
   }
 
@@ -87,14 +85,11 @@ class TriviaGame extends Component {
   updateScore({ target }) {
     const { submitAnswer } = this.props;
     const { timer, isPlaying } = this.state;
-
-    const roundPoints = this.calculateScore(timer, target.id);
-
+    const roundPoints = calculateScore(timer, target.id);
     if (!(target.classList.contains('correct_answer')
     || target.classList.contains('wrong_answer'))) {
       this.applyBorders();
     }
-
     if (target.classList.contains('correct_answer') && isPlaying) {
       submitAnswer(roundPoints);
       const localState = JSON.parse(localStorage.getItem('state'));
@@ -102,19 +97,11 @@ class TriviaGame extends Component {
       localState.player.assertions += 1;
       localStorage.setItem('state', JSON.stringify(localState));
     }
-
     this.answerSound(target);
-
     this.setState({
       isPlaying: false,
       isTiming: false,
     });
-  }
-
-  calculateScore(timer, difficulty) {
-    const initial = 10;
-    const difficultyLevel = this.getDifficulty(difficulty);
-    return initial + (timer * difficultyLevel);
   }
 
   countdown(timer) {
@@ -144,7 +131,6 @@ class TriviaGame extends Component {
   applyBorders() {
     const correctButton = document.querySelector('.correct');
     const wrongButton = document.querySelectorAll('.wrong');
-
     correctButton.className = 'correct_answer';
     wrongButton.forEach((button) => {
       button.className = 'wrong_answer';
@@ -168,19 +154,16 @@ class TriviaGame extends Component {
 
   lastQuestion() {
     const { history, name, score, imgGravatar } = this.props;
-
     const personRank = { name, score, picture: imgGravatar };
     const rank = JSON.parse(localStorage.getItem('ranking'));
     rank.push(personRank);
     localStorage.setItem('ranking', JSON.stringify(rank));
-
     history.push('/feedback');
   }
 
   renderNextButton() {
     const number = 4;
     const { quest } = this.state;
-
     return quest === number ? (
       <Button
         buttonFunction={ this.lastQuestion }
@@ -200,8 +183,14 @@ class TriviaGame extends Component {
   }
 
   renderGame() {
-    const { questions, quest, isEnable, timer, answered } = this.state;
-
+    const {
+      questions,
+      quest,
+      isEnable,
+      timer,
+      answered,
+      initial,
+    } = this.state;
     return (
       <div>
         <audio src={ this.soundPlay() } autoPlay>
@@ -213,13 +202,13 @@ class TriviaGame extends Component {
           <PlayerHeader />
         </div>
         <div className={ styles.gameSection }>
-          <Question
+          {initial ? <Question
             questions={ questions }
             quest={ quest }
             isEnable={ isEnable }
             timer={ timer }
             buttonFunction={ this.updateScore }
-          />
+          /> : <p> Loaging... </p>}
           { answered || timer === 0 ? this.renderNextButton() : null }
         </div>
       </div>
