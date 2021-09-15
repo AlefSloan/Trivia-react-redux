@@ -7,7 +7,7 @@ import Button from './Button';
 class Question extends Component {
   render() {
     const { questions, quest, isEnable, timer, buttonFunction } = this.props;
-
+    console.log(questions);
     return (
       <div>
         {questions.map((question, index) => (
@@ -23,23 +23,20 @@ class Question extends Component {
                   <p>{ `Dificuldade: ${question.difficulty}` }</p>
                 </div>
                 <p data-testid="question-text">{question.question}</p>
-                <Button
-                  buttonId={ question.difficulty }
-                  buttonFunction={ buttonFunction }
-                  className="correct"
-                  dataTest="correct-answer"
-                  isDisabled={ timer === 0 ? true : isEnable }
-                  buttonText={ question.correct_answer }
-                />
-                {question.incorrect_answers
-                  .map((wrong, index2) => (
+                {question.answers
+                  .map((question2, index2) => (
                     <Button
                       key={ index2 }
+                      buttonId={ question2.id === 'correct_answer'
+                        ? question.difficulty : null }
                       buttonFunction={ buttonFunction }
-                      className="wrong"
-                      dataTest={ `wrong-answer-${index2}` }
+                      className={
+                        question2.id === 'correct_answer' ? 'correct' : 'wrong'
+                      }
+                      dataTest={ question2.id === 'correct_answer'
+                        ? 'correct-answer' : 'wrong-answer' }
                       isDisabled={ timer === 0 ? true : isEnable }
-                      buttonText={ wrong }
+                      buttonText={ question2.value }
                     />
                   ))}
               </div>) : null

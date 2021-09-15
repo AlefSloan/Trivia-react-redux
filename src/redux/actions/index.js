@@ -1,4 +1,4 @@
-import getGravatarImgApi from '../../services';
+import { getGravatarImgApi } from '../../services';
 
 const actions = {
   REQUEST_API: 'REQUEST_API',
